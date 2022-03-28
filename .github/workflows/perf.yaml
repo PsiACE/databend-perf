@@ -29,6 +29,12 @@ jobs:
           LASTEST_TAG=$(curl -s GET https://api.github.com/repos/datafuselabs/databend/tags\?per_page\=1 | jq -r '.[].name')
           echo ::set-output name=VERSION::${LASTEST_TAG}
 
+      - name: Get Date
+        id: perf_date
+        run: |
+          THE_DATE=$(date +"%Y-%m-%d")
+          echo ::set-output name=DATE::${THE_DATE}
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -39,7 +45,6 @@ jobs:
       - name: Get perf-tools from S3
         run: |
           aws s3 cp s3://databend-shared/tools/perf-tool/amd64/perf-tool perf-tool
-          aws s3 cp s3://databend-shared/tools/perf-tool/testdatas/ontime.yaml ./benchmarks/ontime.yaml
 
       - name: Run Perf
         env:
@@ -50,7 +55,7 @@ jobs:
         run: |
           chmod +x ./perf-tool
           ./perf-tool --output-format json --test-dir benchmarks -target-dir collector
-          mv collector/ontime.json collector/${{ steps.databend_version.outputs.VERSION }}-ontime.json
+          mv collector/ontime.json collector/ontime/${{ steps.perf_date.outputs.DATE }}-ontime.json
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
