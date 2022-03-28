@@ -56,6 +56,7 @@ jobs:
           chmod +x ./perf-tool
           ./perf-tool --output-format json --test-dir benchmarks -target-dir collector
           mv collector/ontime.json collector/ontime/${{ steps.perf_date.outputs.DATE }}-ontime.json
+          mv collector/numbers.json collector/numbers/${{ steps.perf_date.outputs.DATE }}-numbers.json
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
