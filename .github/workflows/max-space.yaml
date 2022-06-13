@@ -17,6 +17,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Clean up space, from https://github.com/actions/virtual-environments/issues/709#issuecomment-612569242
+        run: |
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+  
       - name: Maximize build space
         uses: easimon/maximize-build-space@master
         with:
@@ -25,11 +31,6 @@ jobs:
           remove-dotnet: 'true'
           remove-android: 'true'
           remove-haskell: 'true'
-
-      - name: Clean up space, from https://github.com/actions/virtual-environments/issues/709#issuecomment-612569242
-        run: |
-          sudo rm -rf "/usr/local/share/boost"
-          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
   
       - name: How much disk space we have? We need 60+ GB
         run: df -h
